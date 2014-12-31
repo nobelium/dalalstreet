@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"./controllers"
 	"log"
+	"./controllers"
 )
 
 const (
@@ -16,9 +16,15 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", IndexHandler)
+	
+	r.HandleFunc("/login", controllers.LoginHandler).Methods("GET")
+	r.HandleFunc("/login", controllers.LoginProcessor).Methods("POST")
+	r.HandleFunc("/logout", controllers.LogoutHandler).Methods("GET", "POST")
+	
+	r.HandleFunc("/", controllers.IndexHandler).Methods("GET")
 
 	http.Handle("/", r)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./assets/"))))
 
 	http.ListenAndServe(ADDRESS, nil)
 }

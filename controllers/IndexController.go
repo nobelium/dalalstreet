@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"log"
 	"github.com/nobelium/dalalstreet/config"
+	"html/template"
 )
 
 func IndexHandler (res http.ResponseWriter, req *http.Request) {
@@ -13,6 +14,10 @@ func IndexHandler (res http.ResponseWriter, req *http.Request) {
 	session.Save(req, res)
 
 	// http.ServeFile(res, req, "./views/index.html")
-	a := config.T("index.html").Execute(res, map[string]interface{}{})
-	return a
+	
+	t := template.Must(template.ParseFiles("views/_base.html", "views/index.html"))
+	err := t.Execute(res, nil)
+	if err != nil {
+		log.Fatalf("template execution: %s", err)
+	}
 }

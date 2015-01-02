@@ -4,20 +4,15 @@ import (
 	"net/http"
 	"strconv"
 	"log"
-	"github.com/nobelium/dalalstreet/controllers"
 )
 
 const (
-	ADDRESS = ":3000"
+	HOST	= "0.0.0.0"
+	PORT	= 3000
 )
 
 func main() {
-	r := mux.NewRouter()
-
-	r.HandleFunc("/login", controllers.LoginHandler).Methods("GET")
-	r.HandleFunc("/login", controllers.LoginProcessor).Methods("POST")
-	r.HandleFunc("/logout", controllers.LogoutHandler).Methods("GET", "POST")
-	r.HandleFunc("/", controllers.IndexHandler).Methods("GET")
+	r := Router
 
 	m := new(Middleware)
 	m.UseCSRF()

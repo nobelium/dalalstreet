@@ -10,7 +10,9 @@ import (
 
 func LoginHandler (res http.ResponseWriter, req *http.Request) {
 	log.Println("Reached LoginHandler")
-	config.Render(res, config.T("login.html"), nil)
+	config.Render(res, config.T("login.html"), map[string]interface{}{
+			"moreStyles" : [...]string{"login.css"},
+		})
 }
 
 func AuthHandler (res http.ResponseWriter, req *http.Request) {

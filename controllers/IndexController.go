@@ -7,11 +7,15 @@ import (
 )
 
 func IndexHandler (res http.ResponseWriter, req *http.Request) {
-	log.Println("Reached IndexHandler")
-	// session := config.GetSession(req)
-	// session.Values["store"] = "asdfasdf--"
-	// session.Save(req, res)
-
 	// http.ServeFile(res, req, "./views/index.html")
-	config.Render(res, config.T("index.html"), nil)
+	log.Println("Reached IndexHandler")
+	session := config.GetSession(req)
+	user, _ := session.Values["user"]
+	msg := session.Flashes()
+	session.Save(req, res)
+
+	config.Render(res, config.T("index.html"), map[string]interface{}{
+			"user" : user,
+			"flash" : msg,
+		})
 }

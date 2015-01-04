@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
 		<title>{{template "title"}}</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-theme.css">
 		<script src="/static/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/static/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
 		{{range .moreStyles}}
-	      <link rel="stylesheet" type="text/css" href="/static/{{.}}">
+	      <link rel="stylesheet" type="text/css" href="/static/css/{{.}}">
 	    {{end}}
 	    {{range .moreScripts}}
-	      <script src="/static/{{.}}" type="text/javascript" charset="utf-8"></script>
+	      <script src="/static/js/{{.}}" type="text/javascript" charset="utf-8"></script>
 	    {{end}}
 	</head>
 	<body>
-		<section id="content">
-			{{template "content"}}
-		</section>
-		{{template "flash"}}
+		{{template "content" .}}
+		
+		{{template "flash" .}}
 	</body>
 </html>

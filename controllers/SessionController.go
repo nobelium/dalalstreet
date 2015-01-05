@@ -18,17 +18,13 @@ func LoginHandler (res http.ResponseWriter, req *http.Request) {
 func AuthHandler (res http.ResponseWriter, req *http.Request) {
 	log.Println("Reached AuthHandler")
 	
-	username, password := req.FormValue("username"), req.FormValue("password")
+	username, password := req.FormValue("Username"), req.FormValue("Password")
 
 	user, err := models.Validate(username, password)
-	
-	if err != nil {
-		log.Println("Failed to authenticate : ", username)
-	}
 
 	session := config.GetSession(req)
 	var redirect_uri string
-	if user == nil {
+	if err != nil || user == nil {
 		session.AddFlash("User name or password is incorrect", config.MessageName)
 		session.Save(req, res)
 		redirect_uri = "/login"

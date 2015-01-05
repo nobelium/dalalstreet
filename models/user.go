@@ -3,12 +3,14 @@ package models
 import (
 	"log"
 	"code.google.com/p/go.crypto/bcrypt"
+	"github.com/nobelium/dalalstreet/config"
 )
 
 type User struct {
-	ID			int
 	Username	string
 	Password	[]byte
+	Email 		string
+	Name 		string
 }
 
 func (u *User) SetPassword(password string) {
@@ -20,14 +22,21 @@ func (u *User) SetPassword(password string) {
 }
 
 func Validate(username, password string) (u *User, err error) {
-	// err = ctx.C("users").Find(username).One(&u)
-	// if err != nil {
-	// 	return
-	// }
+	log.Println("Selecting for user : ", username, password)
 
-	err = bcrypt.CompareHashAndPassword(u.Password, []byte(password))
-	if err != nil {
-		u = nil
-	}
-	return
+	row := config.DB.QueryRow("select * from users where username=? limit 1", username)
+	user := new(User)
+	row.Scan(&user.Username, &user.Email, &user.Password, &user.Name)
+
+	err = bcrypt.CompareHashAndPassword(user.Password, []byte(password))
+
+	return user, err
+}
+
+func AddUser(username, email, password, name string) {
+
+}
+
+func RemoveUser(username string) {
+
 }

@@ -6,11 +6,15 @@ import (
 	"github.com/nobelium/dalalstreet/config"
 )
 
+func init () {
+	config.DbMap.AddTableWithName(User{}, "users").SetKeys(false, "Username")
+}
+
 type User struct {
-	Username	string
-	Password	[]byte
-	Email 		string
-	Name 		string
+	Username	string	`db:"username"`
+	Password	[]byte	`db:"password"`
+	Email 		string	`db:"email"`
+	Name 		string	`db:"name"`
 }
 
 func (u *User) SetPassword(password string) {
@@ -24,19 +28,24 @@ func (u *User) SetPassword(password string) {
 func Validate(username, password string) (u *User, err error) {
 	log.Println("Selecting for user : ", username, password)
 
-	row := config.DB.QueryRow("select * from users where username=? limit 1", username)
-	user := new(User)
-	row.Scan(&user.Username, &user.Email, &user.Password, &user.Name)
+	obj, err := config.DbMap.Get(User{}, username)
+	user := obj.(*User)
 
 	err = bcrypt.CompareHashAndPassword(user.Password, []byte(password))
 
 	return user, err
 }
 
-func AddUser(username, email, password, name string) {
+func AddUser(username, email, password, name string) (ok bool, err error){
+	err = config.DbMap.Insert(&User{username, []byte(password), email, name})
 
+	ok = true
+	if err != nil {
+		ok = false
+	}
+	return ok, err
 }
 
-func RemoveUser(username string) {
-
+func RemoveUser(username string) (count int64, err error){
+	return config.DbMap.Delete(&User{username, []byte(nil), "", ""})
 }

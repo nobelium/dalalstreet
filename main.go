@@ -17,9 +17,9 @@ func main() {
 	m := new(Middleware)
 	m.UseCSRF()
 	m.UseLogger()
+	m.UseContextSetter()
 
-	// http.Handle("/", m.Init(r))
-	http.Handle("/", r)
+	http.Handle("/", m.Init(r))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./assets/"))))
 
 	address := HOST + ":" + strconv.Itoa(PORT)

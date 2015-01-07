@@ -5,6 +5,9 @@ import (
 	"log"
 	"reflect"
 	"code.google.com/p/xsrftoken"
+	"github.com/gorilla/context"
+	"github.com/nobelium/dalalstreet/config"
+	// "github.com/nobelium/dalalstreet/models"
 )
 
 type MiddlewareFunc func (http.ResponseWriter, *http.Request)
@@ -21,6 +24,8 @@ func (m *Middleware) Init(h http.Handler) http.Handler {
 		for _,f := range m.middlewares {
 			reflect.ValueOf(f).Call(in)
 		}
+
+		h.ServeHTTP(w, r)
 	})
 }
 
@@ -39,5 +44,15 @@ func (m *Middleware) UseCSRF() {
 func (m *Middleware) UseLogger() {
 	m.Use(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("\"%s\" \"%s\" \"%s\"", r.RemoteAddr, r.Method, r.URL)
+	})
+}
+
+// Set the user in gorilla context if its available in the session
+func (m *Middleware) UseContextSetter() {
+	m.Use(func(w http.ResponseWriter, r *http.Request) {
+		session := config.GetSession(r)
+		user := session.Values["user"]
+		context.Set(r, config.LoggedInUser, user)
+		log.Println("Found user", user)
 	})
 }

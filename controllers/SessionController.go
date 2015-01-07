@@ -4,12 +4,18 @@ import (
 	"net/http"
 	"log"
 	// "fmt"
+	"encoding/gob"
 	"github.com/nobelium/dalalstreet/config"
 	"github.com/nobelium/dalalstreet/models"
 )
 
+func init () {
+	gob.Register(&models.User{})
+}
+
 func LoginHandler (res http.ResponseWriter, req *http.Request) {
 	log.Println("Reached LoginHandler")
+	log.Println(config.GetSession(req))
 	config.Render(res, config.T("login.html"), map[string]interface{}{
 			"moreStyles" : [...]string{"login.css"},
 		})
@@ -21,7 +27,6 @@ func AuthHandler (res http.ResponseWriter, req *http.Request) {
 	username, password := req.FormValue("Username"), req.FormValue("Password")
 
 	user, err := models.Validate(username, password)
-
 	session := config.GetSession(req)
 	var redirect_uri string
 	if err != nil || user == nil {
@@ -32,7 +37,7 @@ func AuthHandler (res http.ResponseWriter, req *http.Request) {
 		session.Values["user"] = user
 		redirect_uri, _ = session.Values["RedirectURI"].(string)
 	}
-	session.Save(req, res)
+	err = session.Save(req, res)
 	http.Redirect(res, req, redirect_uri, http.StatusFound)
 }
 

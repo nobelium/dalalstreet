@@ -15,7 +15,7 @@ func IndexHandler (res http.ResponseWriter, req *http.Request) {
 	session.Save(req, res)
 
 	config.Render(res, config.T("index.html"), map[string]interface{}{
-			"user" : user,
-			"flash" : msg,
-		})
+		"user" : user,
+		"flash" : msg,
+	})
 }

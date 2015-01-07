@@ -19,7 +19,7 @@ func T(name string) *template.Template {
 
 	t := template.New("_base.html")
 
-	t = template.Must(template.ParseFiles("./views/_base.html", filepath.Join("./views/", name), "./views/flash.html"))
+	t = template.Must(template.ParseFiles("./views/_base.html", "./views/header.html", filepath.Join("./views/", name), "./views/flash.html"))
 
 	cachedTemplates[name] = t
 

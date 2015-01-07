@@ -12,6 +12,13 @@ var (
 	MessageName = "Message"
 )
 
+func init () {
+	Store.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   3600 * 8, // 8 hours
+	}
+}
+
 func GetSession (req *http.Request) *sessions.Session {
 	session, err := Store.Get(req, SessionName)
 	if err != nil {

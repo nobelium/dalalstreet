@@ -7,7 +7,7 @@ import (
 	"code.google.com/p/xsrftoken"
 	"github.com/gorilla/context"
 	"github.com/nobelium/dalalstreet/config"
-	// "github.com/nobelium/dalalstreet/models"
+	"github.com/nobelium/dalalstreet/models"
 )
 
 type MiddlewareFunc func (http.ResponseWriter, *http.Request)
@@ -52,7 +52,10 @@ func (m *Middleware) UseContextSetter() {
 	m.Use(func(w http.ResponseWriter, r *http.Request) {
 		session := config.GetSession(r)
 		user := session.Values["user"]
-		context.Set(r, config.LoggedInUser, user)
-		log.Println("Found user", user)
+		if (user != nil) {
+			user = user.(*models.User)
+			context.Set(r, config.LoggedInUser, user)
+		}
+		log.Println("Found user ", user)
 	})
 }

@@ -4,6 +4,8 @@ import (
 	"log"
 	"code.google.com/p/go.crypto/bcrypt"
 	"github.com/nobelium/dalalstreet/config"
+	"github.com/gorilla/context"
+	"net/http"
 )
 
 func init () {
@@ -48,4 +50,17 @@ func AddUser(username, email, password, name string) (ok bool, err error){
 
 func RemoveUser(username string) (count int64, err error){
 	return config.DbMap.Delete(&User{username, []byte(nil), "", ""})
+}
+
+func IsLoggedIn(req *http.Request) (bool){
+	user := context.Get(req, config.LoggedInUser)
+	if(user == nil){
+		return false
+	} 
+	return true
+}
+
+func GetLoggedInUser(req *http.Request) (*User){
+	user := context.Get(req, config.LoggedInUser)
+	return user.(*User)
 }

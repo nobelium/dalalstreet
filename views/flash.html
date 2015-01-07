@@ -2,7 +2,9 @@
 	<div id="container">
 		<div id="row">
 			{{ range .flash }}
-				{{.}}
+				<div class="alert alert-success">
+					{{.}}
+				</div>
 			{{ end }}
 		</div>
 	</div>

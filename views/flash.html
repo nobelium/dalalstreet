@@ -1,7 +1,9 @@
 {{ define "flash" }}
 	<div id="container">
 		<div id="row">
-			{{ .flash }}
+			{{ range .flash }}
+				{{.}}
+			{{ end }}
 		</div>
 	</div>
 {{ end }}

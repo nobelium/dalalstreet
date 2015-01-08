@@ -14,9 +14,17 @@ type Transaction struct {
 	Username	string	`db:"username"`
 	StockId		int 	`db:"stockId"`
 	Number		int 	`db:"number"`
-	LoanValue	float	`db:"loanValue"`
+	LoanValue	float64	`db:"loanValue"`
 }
 
-func AddTransaction() {
+func (t *Transaction) AddTransaction() (ok bool, err error){
+	log.Println("Mortgaging ", t.Username, t.StockId, t.Number, t.LoanValue)
 
+	err = config.DbMap.Insert(t)
+
+	ok = true
+	if err != nil {
+		ok = false
+	}
+	return ok, err
 }

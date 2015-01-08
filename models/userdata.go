@@ -16,8 +16,22 @@ type Userdata struct {
 	Time 		string 	`db:"time"`
 }
 
-func getValue(username, key string) (string){
-	obj, _ = config.DbMap.Get(Userdata{}, username, key)
+func StoreValue(username, key, value string) (ok bool, err error){
+	log.Println("Storing data for ", username, key, value)
+
+	err = config.DbMap.Insert(&Userdata{username, key, value, ""})
+
+	ok = true
+	if err != nil {
+		ok = false
+	}
+	return ok, err
+}
+
+func FetchValue(username, key string) (string){
+	log.Println("Fetching value for ", username, key)
+
+	obj, _ := config.DbMap.Get(Userdata{}, username, key)
 	userdata := obj.(*Userdata)
 	return userdata.Value
 }

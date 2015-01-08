@@ -31,6 +31,10 @@ func LoginHandler (res http.ResponseWriter, req *http.Request) {
 func AuthHandler (res http.ResponseWriter, req *http.Request) {
 	log.Println("Reached AuthHandler")
 	
+	if(models.IsLoggedIn(req)) {
+		http.Redirect(res, req, "/", http.StatusFound)
+	}
+	
 	username, password := req.FormValue("Username"), req.FormValue("Password")
 
 	user, err := models.Validate(username, password)

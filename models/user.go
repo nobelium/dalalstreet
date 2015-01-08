@@ -4,7 +4,6 @@ import (
 	"log"
 	"code.google.com/p/go.crypto/bcrypt"
 	"github.com/nobelium/dalalstreet/config"
-	"github.com/gorilla/context"
 	"net/http"
 )
 
@@ -53,7 +52,8 @@ func RemoveUser(username string) (count int64, err error){
 }
 
 func IsLoggedIn(req *http.Request) (bool){
-	user := context.Get(req, config.LoggedInUser)
+	session := config.GetSession(req)
+	user := session.Values["user"]
 	if(user == nil){
 		return false
 	} 
@@ -61,6 +61,7 @@ func IsLoggedIn(req *http.Request) (bool){
 }
 
 func GetLoggedInUser(req *http.Request) (*User){
-	user := context.Get(req, config.LoggedInUser)
+	session := config.GetSession(req)
+	user := session.Values["user"]
 	return user.(*User)
 }

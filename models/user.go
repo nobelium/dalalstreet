@@ -65,3 +65,7 @@ func GetLoggedInUser(req *http.Request) (*User){
 	user := session.Values["user"]
 	return user.(*User)
 }
+
+func (u *User) GetCashInHand() (string) {
+	return FetchValue(u.Username, "cashInHand")
+}

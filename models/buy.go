@@ -6,7 +6,7 @@ import (
 )
 
 func init () {
-	config.DbMap.AddTableWithName(Buy{}, "buying_table").SetKeys(true, "buyID")
+	config.DbMap.AddTableWithName(Buy{}, "buying_table").SetKeys(true, "buyId")
 }
 
 type Buy struct {

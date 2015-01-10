@@ -54,10 +54,10 @@ func RemoveUser(username string) (count int64, err error){
 func IsLoggedIn(req *http.Request) (bool){
 	session := config.GetSession(req)
 	user := session.Values["user"]
-	if(user == nil){
-		return false
+	if(user != nil){
+		return true
 	} 
-	return true
+	return false
 }
 
 func GetLoggedInUser(req *http.Request) (*User){

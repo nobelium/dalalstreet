@@ -17,14 +17,38 @@ type Transaction struct {
 	LoanValue	float64	`db:"loanValue"`
 }
 
-func (t *Transaction) AddTransaction() (ok bool, err error){
+func (t *Transaction) Mortgage() (bool, error){
 	log.Println("Mortgaging ", t.Username, t.StockId, t.Number, t.LoanValue)
 
-	err = config.DbMap.Insert(t)
-
-	ok = true
+	// Begin Transaction
+	// Remove the stocks form user account
+	// Add it mortgage
+	// Add cash to user account
+	trans, err := config.DbMap.Begin()
 	if err != nil {
-		ok = false
+		return false, err
 	}
-	return ok, err
+
+	trans.Insert(t)
+
+
+	err = trans.Commit()
+	if err != nil {
+		return false, err
+	}
+	return true, err
 }
+
+func (t *Transaction) GetMorgage() {
+	obj, err := config.DbMap.Get(Transaction{}, t.MortgageId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t = obj.(*Transaction)
+}
+
+func GetMorgages(username string) (){
+	// var list []Transaction
+}
+

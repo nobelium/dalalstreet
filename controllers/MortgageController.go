@@ -21,6 +21,7 @@ func MortgagePageHandler (res http.ResponseWriter, req *http.Request) {
 		config.Render(res, config.T("mortgage.html"), map[string]interface{}{
 				"user" : user,
 				"moreStyles" : [...]string{},
+				"mortgage" : "asdf",
 			})
 	}
 }
@@ -56,5 +57,30 @@ func MortgagePostHandler (res http.ResponseWriter, req *http.Request) {
 }
 
 func RecoverMortgageHandler (res http.ResponseWriter, req *http.Request) {
+	log.Println("Received Mortgage req")
 
+	if(models.IsLoggedIn(req) == false){
+		http.Redirect(res, req, "/login?redirect_uri=/mortgage", http.StatusFound)
+	} else {
+		user := models.GetLoggedInUser(req)
+
+		mortgageId, _ := strconv.Atoi(req.FormValue("MortgageId"))
+
+		mortgage := &models.Transaction{mortgageId, "", 0, 0, 0}
+		mortgage.GetMorgage()
+
+		var ok bool 
+		var err error
+		if(mortgage.Username == user.Username) {
+			ok, err = mortgage.Unmortgage()
+		}
+
+		if(ok) {
+			json_mortgage, _ := json.Marshal(mortgage)
+			fmt.Fprint(res, string(json_mortgage))
+		} else {
+			json_err, _ := json.Marshal(err)
+			fmt.Fprint(res, string(json_err))
+		}
+	}
 }

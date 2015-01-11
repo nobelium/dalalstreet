@@ -3,5 +3,36 @@
 {{ define "content" }}
 	<div class="container">
 		Mortgage your stocks here!!!
+		{{ if .mortgage }}
+			<div class="col-md-12">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>MortgageID</th>
+							<th>StockID</th>
+							<th>Quantity</th>
+							<th>Loan Value</th>
+							<th>Operation</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{ range .mortgage }}
+							<tr>
+								<td>{{ .MortgageId }}</td>
+								<td>{{ .StockId }}</td>
+								<td>{{ .Number }}</td>
+								<td>{{ .LoadValue }}</td>
+								<td>
+									<form action="/mortgage/recover" method="post">
+										<input type="hidden" value="{{ .MortgageId }}" name="MortgageId">
+										<input type="submit" value="Unmortgage" class="btn btn-primary">
+									</form>
+								</td>
+							</tr>
+						{{ end }}
+					</tbody>
+				</table>
+			</div>
+		{{ end }}
 	</div>
 {{ end }}

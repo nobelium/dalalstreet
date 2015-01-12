@@ -8,6 +8,7 @@ import (
 
 var (
 	Store = sessions.NewCookieStore([]byte("324546fa343e8b9067bb412d678a89e83629ffe23940"))
+	CSRF_key = "asd89389hfwpiuhefhibjkas7338iu39898wf8d899fds9"
 	SessionName = "flash-session"
 	MessageName = "Message"
 )

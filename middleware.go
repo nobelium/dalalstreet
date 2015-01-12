@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"log"
 	"reflect"
+	"crypto/rand"
+	// "crypto/subtle"
 	"code.google.com/p/xsrftoken"
 	"github.com/gorilla/context"
 	"github.com/nobelium/dalalstreet/config"
@@ -33,11 +35,34 @@ func (m *Middleware) Use(f MiddlewareFunc){
 	m.middlewares = append(m.middlewares, f)
 }
 
-// Pre configured Middlewares
+/**
+ *
+ *
+ * Pre configured Middlewares 
+ *
+ *
+ **/
+
 func (m *Middleware) UseCSRF() {
 	m.Use(func(w http.ResponseWriter, r *http.Request) {
-		xsrftoken.Generate("samplekey", "asdf", r.Method)
-		//TODO find a way to inject into request
+		session := config.GetSession(r)
+		session_id, ok := session.Values["ID"]
+		if !ok {
+			token := make([]byte, 32)
+			rand.Read(token)
+			session.Values["ID"] = string(token)
+		}
+
+		csrf_token, ok := session.Values["csrf_token"]
+		if !ok {	
+			csrf_token = xsrftoken.Generate(config.CSRF_key, session_id.(string), "POST")
+			session.Values["csrf_token"] = csrf_token
+		}
+		session.Save(r, w)
+		// TODO : change to constant TIME compare
+		if r.Method == "POST" && r.FormValue("csrf_token") != csrf_token {
+			http.Error(w, "CSRF Attack detected", http.StatusForbidden)
+		}
 	})
 }
 

@@ -21,10 +21,12 @@ func LoginHandler (res http.ResponseWriter, req *http.Request) {
 
 	session := config.GetSession(req)
 	session.Values["RedirectURI"] = req.URL.Query().Get("redirect_uri")
+	csrf_token, _ := session.Values["csrf_token"]
 	session.Save(req, res)
 
 	config.Render(res, config.T("login.html"), map[string]interface{}{
 			"moreStyles" : [...]string{"login.css"},
+			"csrf_token" : csrf_token,
 		})
 }
 
